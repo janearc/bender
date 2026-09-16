@@ -1,0 +1,14 @@
+# game: this repository
+#
+# name is the project: the block in the builder's own config that says
+# where this tree's two remotes are. nothing here holds a remote, and a
+# builder with no block for it builds locally.
+name libtheme-css
+
+# the lint is the builder's dotfile, whole: describing none here takes
+# every rule as it stands.
+
+# the design page ends with the author's byline, which is the one place in
+# this tree a name belongs; the sweep is told so rather than the byline
+# being moved to a file nobody reads.
+exclude DESIGN.md

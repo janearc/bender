@@ -1,0 +1,34 @@
+# A deliberately not-a-puffin, hand-written to the documented format and
+# nothing else. It exists to prove that a sprite nobody here drew gets the
+# whole vocabulary: themes, sizing, cutout, blink, gaze and the stock emotes.
+sprite stranger
+
+art
+....KKKKKK....
+..KKWWWWWWKK..
+.KWXEEXWXEEXK.
+.KWXEEXWXEEXK.
+.KWWWWWBBWWWK.
+.KWWWWWYYWWWK.
+..KWWWWRRWWK..
+..KKWWWWWWKK..
+...WWWWWWWW...
+...WWWWWWWW...
+....WWWWWW....
+.....OOOO.....
+
+# two patches, because one overlay spanning both eyes would repaint the
+# muzzle between them
+pose blink
+at 3,2
+WWWW
+DDDD
+at 8,2
+WWWW
+DDDD
+
+pose mouth0
+
+pose mouth1
+at 7,5
+KK

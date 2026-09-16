@@ -1,0 +1,6 @@
+# measured output, not source. regenerate with the tools.
+corpus/
+*.pyc
+__pycache__/
+sources
+AUDIT*

@@ -1,0 +1,42 @@
+# game: bender, the stack as one distribution
+#
+# bender is not a place to work: every member is developed in its own
+# repository and published there. this is the copy for somebody who wants
+# the whole stack, assembled by game release stack.
+name bender
+
+# the members, bottom to top, and the tag each is taken at.
+stack game v0.3.18
+stack flipr-dist v0.3.1
+stack starling-dist v0.3.1
+stack puffin-dist v0.3.2
+stack kingfisher-dist v0.3.1
+stack libtheme-css v0.3.2
+stack libdaffy v0.3.1
+stack angry v0.3.2
+
+# cassowary ships inside bender and nowhere else: it is forensics for the
+# agents that built this stack, and its marks are the estate it was used
+# on, which is why it is not a repository of its own.
+stack cassowary-dist v0.3.2
+
+# the lint bender holds for its own pages. a repository that describes any
+# lint describes all of it, so the allowances below need this list above
+# them to mean anything; without it bender's own prose goes unchecked.
+lint width 80
+lint comments
+lint exclaim
+lint shout
+lint paragraph 4
+lint words hyperscaler enterprise-grade blazing-fast load-bearing
+
+# libtheme's design page ends with its author's byline, which is the one
+# place in that tree a name belongs; the stack's sweep is told so.
+exclude libtheme-css/DESIGN.md
+
+# the readme is the operator's own writing, and the paragraph rule was
+# written for the agents. "no single paragraph should be greater than 4
+# lines" was aimed at padding, not at the person explaining her own stack,
+# and the one exclamation in it is hers. the page keeps its shape.
+lint allow readme.md paragraph exclaim rows
+lint allow bender-short.md paragraph exclaim rows

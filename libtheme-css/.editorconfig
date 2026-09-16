@@ -1,0 +1,23 @@
+# one of us has to be right. this is it, and it isn't either of us.
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+# go and makefiles: real tabs, shown four wide. gofmt writes tabs whatever
+# the editor thinks, and make requires them.
+[*.go]
+indent_style = tab
+tab_width = 4
+
+[Makefile]
+indent_style = tab
+tab_width = 4
+
+# everything read as text: two spaces, which is what the colourway files
+# already are.
+[*.{css,md,json,yaml,yml,toml}]
+indent_style = space
+indent_size = 2

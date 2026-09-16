@@ -1,0 +1,704 @@
+================================================================================
+cassowary -- SOURCES.TXT
+================================================================================
+
+every source the library cites, with a plain summary of what the thing
+actually is. the point of a separate file is that a citation should be
+readable by somebody who has not read the code. this file is authoritative:
+the sources were read to write it, and `lib/exposure/standards.py` is the
+machine-readable version, reconciled to this one where the two disagree.
+
+each entry header carries two words. the first is evidence -- what kind of
+claim the source can support at all, which is the sort order that matters,
+because a taxonomy cannot be wrong the way a measurement can be wrong, and
+quoting one as evidence that something happened is the most common error
+available here:
+
+  statutory       a legal instrument. binding, and not evidence of anything
+  definitional    proposes a category. establishes nothing
+  documentary     this document exists and says this
+  associational   observed together. the design cannot say why
+  causal          randomised, or otherwise identified
+
+the second is interest -- whether whoever wrote it had something to win.
+descriptive, not pejorative: a mandated body doing careful science is still a
+mandated body, and saying so is what lets a reader weigh it themselves.
+
+  disinterested   no stake beyond getting it right
+  mandated        a body with authority or a remit on the subject. WHO, the
+                  ILO, the EU, IARC. the number is official, which is a
+                  different thing from the number being measured
+  advocacy        exists to advance a position
+  adversarial     written to win a specific dispute
+
+the one number this file computes.
+
+five entries argue against another entry in the library rather than supporting
+one. they are collected in `DISSENT` in `lib/exposure/standards.py`, and
+`dissent_strength()` is `len(DISSENT) / len(ALL)` -- how much of the catalogue
+argues with the rest of it. `python3 -m exposure.standards --check` prints it:
+at the time of writing, 23%, five of twenty-two.
+
+  kivimaki_who_ilo_rebuttal     cuts at who_ilo_55h. a reply in the journal
+                                that published the estimates, arguing the
+                                expert group misapplied its own evidence
+                                framework and that the association holds only
+                                in low-ses occupations. cuts at the cardiac
+                                outcome, not at the hours count.
+
+  bianchi_burnout_depression    cuts at icd11_burnout, from the side icd-11
+                                does not already concede: where burnout is
+                                measured it may be measuring depression.
+
+  van_dongen_2004_individual    cuts at van_dongen_2003, which is the only
+                                causal result the exposure half rests on. a
+                                population dose-response curve does not
+                                transfer to one person.
+
+  fitz_variable_ratio_null      cuts at the variable-reward story attached to
+                                the attention-capture entries, using the data
+                                of the paper that supplies our only randomised
+                                threshold.
+
+  allcott_correlational_gap     cuts at every observational number in the kit,
+                                `pull.py` included: within one randomised
+                                trial the correlation ran about three times
+                                the causal effect.
+
+it is reported, not graded, and there is no pass mark. this replaced a floor --
+`--check` used to fail below two dissenting sources -- because a floor could not
+fail for the reason it named: two token dissenters clear a floor of two beside
+any quantity of agreement, so the only thing it could catch was somebody
+deleting entries. a share moves when a source is added either way, which is what
+makes it worth printing. what it still cannot do is tell you the dissent is any
+good; for that you read the five entries.
+
+================================================================================
+portions of code are excerpt from
+================================================================================
+
+--------------------------------------------------------------------------------
+llm-dark-patterns                                        [carved, apache-2.0]
+--------------------------------------------------------------------------------
+
+  LLM Dark Patterns Hooks. waitdeadai, 2025-2026.
+    https://github.com/waitdeadai/llm-dark-patterns
+    Apache License, Version 2.0.
+
+  what it is. a set of twenty-eight claude code hooks that match assistant
+  output against named manipulative constructs, with an evaluation directory
+  behind them. the expressions are maintained as posix extended regular
+  expressions (ere), not one-off greps.
+
+  what we took, exactly. six expressions, now in `lib/exposure/carved.py`:
+
+      CLIFFHANGER, CLIFFHANGER_ALLOW      from hooks/no-cliffhanger.sh
+      TIER_A, TIER_B, TIER_C,             from hooks/no-chat-retention.sh
+      AI_DISCLOSURE
+
+  how we took it. reformatted from shell ere to python `re`, `[[:space:]]`
+  rewritten as `\s`, and comments added above each expression saying what it is
+  for and where it came from. the expressions themselves are used as written; a
+  change at a point of use is noted at that point. nothing else in the
+  repository is taken -- the other twenty-six hooks are not here, and that is a
+  scoping decision rather than a licensing one, since apache-2.0 would have
+  covered them too.
+
+  why carved rather than invented. cassowary's own eight detectors in
+  `lib/exposure/detect.py` match phrases chosen with no external validation
+  behind them -- no study, no evaluation directory. that is a legitimate
+  operationalisation and a weaker one than a maintained set with an evaluation
+  directory behind it. taking the construct with its provenance attached is
+  the standard the rest of this library already holds itself to, and the
+  honest way to say so is to name whose expressions these are.
+
+  one behaviour worth knowing before you use them: TIER_B requires the
+  contraction: `I'm glad you reached out` matches, `I am glad you reached out`
+  does not. that is as written upstream and we did not silently widen it.
+
+  this package (cassowary) takes its apache 2 license from llm-dark-patterns.
+
+  thanks.
+
+================================================================================
+occupational -- hours, rest, and outcome
+================================================================================
+
+these are what `hours.py` and `load-profile.py` measure against. three of the
+five are law and the other two are not, which is the distinction the readme
+makes and the code carries.
+
+key                                                          evidence | interest
+--------------------------------------------------------------------------------
+who_ilo_55h                                             associational | mandated
+--------------------------------------------------------------------------------
+
+  Pega et al., WHO/ILO joint estimates. Environment International, 17 May 2021.
+    https://www.who.int/news/item/17-05-2021-long-working-hours
+    -increasing-deaths-from-heart-disease-and-stroke-who-ilo
+
+  what it is. the joint who/ilo estimate, synthesising 37 studies on heart
+  disease (768,000+ participants) and 22 on stroke (839,000+) across 154
+  countries, 1970-2018. the headline: 55+ hours a week associates with 35%
+  higher stroke risk and 17% higher risk of dying of ischaemic heart disease,
+  against a 35-40 hour reference.
+
+  what it is not. a prediction about any one person, and not a limit. it also
+  says nothing about which seven days, so a calendar week and a rolling window
+  are both defensible readings -- `load-profile.py` uses a rolling seven days,
+  because a heavy stretch is harder to hide inside one; `hours.py`'s weekly
+  view uses the iso calendar week instead. see kivimaki_who_ilo_rebuttal, which
+  disputes it.
+
+--------------------------------------------------------------------------------
+eu_wtd_daily_rest                                           statutory | mandated
+eu_wtd_weekly_rest                                          statutory | mandated
+eu_wtd_weekly_max                                           statutory | mandated
+--------------------------------------------------------------------------------
+
+  Directive 2003/88/EC, Articles 3, 5 and 6. CELEX 32003L0088.
+    https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32003L0088
+
+  what it is. the working time directive. three articles are used:
+
+      art. 3   11 consecutive hours of rest in every 24
+      art. 5   35 uninterrupted hours per seven days
+      art. 6   48 hours a week, averaged, overtime included
+
+  the three rows in this library that are law. that does not map cleanly onto
+  which ones the code gates: `load-profile.py`'s `fired()` checks `rest-11`
+  (daily rest) and `no-day-off` (weekly rest) directly, alongside `hours-55`,
+  which is not law. the 48-hour weekly average is never gated at all --
+  `hours.py` only ever prints it as over or ok.
+
+  what it is not. a clinical finding. it is a legal entitlement inside an
+  employment relationship, does not apply to a self-employed person, and must
+  not be quoted as health evidence. its value here is precisely that the number
+  was set by somebody other than us.
+
+  two traps. art. 5 is commonly quoted as 24 hours; that is wrong, the article
+  adds the daily 11 on top, so 35. and art. 6 is an average over a reference
+  period rather than a hard weekly cap, individually waivable in some member
+  states.
+
+--------------------------------------------------------------------------------
+icd11_burnout                                            definitional | mandated
+--------------------------------------------------------------------------------
+
+  World Health Organization, ICD-11. Statement of 28 May 2019.
+    https://www.who.int/news/item/28-05-2019-burn-out-an-occupational
+    -phenomenon-international-classification-of-diseases
+
+  what it is. a definition, and a careful one. burn-out is an occupational
+  phenomenon and is NOT classified as a medical condition. three dimensions:
+  energy depletion or exhaustion; increased mental distance from one's job, or
+  negativism or cynicism about it; and reduced professional efficacy. the
+  statement restricts it to the occupational context explicitly.
+
+  what it is not. anything you can diagnose from behavioural data. all three
+  dimensions are subjective states and none can be read off timestamps or
+  commit counts. a tool may measure exposure; it may not infer this. see
+  bianchi_burnout_depression, which cuts from the other side.
+
+================================================================================
+sleep
+================================================================================
+
+key                                                          evidence | interest
+--------------------------------------------------------------------------------
+van_dongen_2003                                           causal | disinterested
+--------------------------------------------------------------------------------
+
+  Van Dongen, Maislin, Mullington and Dinges. The Cumulative Cost of Additional
+  Wakefulness: Dose-Response Effects on Neurobehavioral Functions and Sleep
+  Physiology from Chronic Sleep Restriction and Total Sleep Deprivation.
+  Sleep 26(2), March 2003, 117-126.
+    https://academic.oup.com/sleep/article-abstract/26/2/117/2709164
+
+  what it is. the result the exposure half of this package rests on, and the
+  only causal one in it. sleep held to 4 or 6 hours for 14 consecutive nights
+  produced cumulative, dose-dependent deficits on every cognitive task
+  measured. subjective sleepiness rose acutely, then only slightly, and did not
+  distinguish the 6-hour condition from the 4-hour one. self-report stopped
+  tracking the deficit while the deficit went on accumulating.
+
+  why it is here. it is the one finding that licenses an instrument to disagree
+  with a person about their own state -- and it licenses that narrowly. the
+  careful statement is that self-report plateaus while performance keeps
+  falling, not that people become unable to assess themselves at all.
+
+  what it is not. a field study. fixed laboratory doses, not people choosing
+  their own hours. see van_dongen_2004_individual, which qualifies it
+  substantially.
+
+================================================================================
+dark patterns -- interface, platform, and language model
+================================================================================
+
+key                                                          evidence | interest
+--------------------------------------------------------------------------------
+brignull_dark_patterns                                   definitional | advocacy
+--------------------------------------------------------------------------------
+
+  deceptive.design, formerly darkpatterns.org. Testimonium Ltd, 2010-.
+    https://www.deceptive.design/
+
+  what it is. the origin catalogue of the field, and where the vocabulary comes
+  from. deceptive patterns are features that trick people into doing things
+  they did not mean to: stopping them doing what they want, or steering them
+  toward harmful decisions.
+
+  attribution note. the term is widely credited to Harry Brignull and the site
+  is associated with him, but the site itself does not state who coined it, so
+  the coinage is not asserted here. the operator of record is Testimonium Ltd
+  (England and Wales, no. 12206608).
+
+  what it is not. transferable as-is. it is a taxonomy of interface mechanics,
+  developed for commercial interfaces with a conversion goal. a conversational
+  system has no click targets.
+
+--------------------------------------------------------------------------------
+mathur_dark_patterns_at_scale                      associational | disinterested
+--------------------------------------------------------------------------------
+
+  Mathur, Acar, Friedman, Lucherini, Mayer, Chetty and Narayanan. Dark Patterns
+  at Scale: Findings from a Crawl of 11K Shopping Websites. Proceedings of the
+  ACM on Human-Computer Interaction 3(CSCW), November 2019.
+    https://arxiv.org/abs/1907.07032
+
+  what it is. the proof that automated detection works at all. the study's
+  crawl of ~11,000 shopping sites and ~53,000 product pages found 1,818
+  instances across 183 sites, in 15 types and 7 categories, and identified 22
+  third-party vendors selling them as a service.
+
+  why it is here. it establishes that a pattern with a known surface form can
+  be counted by a machine, which is the premise of every counting tool in this
+  package.
+
+  what it is not. evidence of intent in any single case, and its methods do not
+  transfer to prose.
+
+--------------------------------------------------------------------------------
+kallioniemi_facebook                                definitional | disinterested
+--------------------------------------------------------------------------------
+
+  Pekka Kallioniemi. Facebook's Dark Pattern Design, Public Relations and
+  Internal Work Culture. Journal of Digital Media & Interaction 5(12):38-54,
+  2022. doi:10.34624/jdmi.v5i12.28378
+
+  what it is, and it is one row. it proposes a single addition to Mathur et
+  al.'s six higher-level attributes: Information Promotion, under manipulating
+  the information flow -- promoting engaging content regardless of the validity
+  or safety of what it contains. the mechanism is located in information flow,
+  plus appeals to basic emotions, plus behaviour that feels organic and freely
+  chosen.
+
+  the original idea for dark pattern detection in this library started here.
+  on full analysis it proved to be a starting point rather than a sufficient
+  basis for implementation.
+
+  what it is not. a measurement study. it is a taxonomy paper and a document
+  analysis: no coding scheme, no counts, no reliability statistic, no
+  causation and no association. established by exhaustive term count on the
+  full text: chatbot, conversational, text-only, voice, badge, red dot,
+  pull-to-refresh, streak, autoplay and infinite scroll each appear zero
+  times; notification appears once in a passing citation. it says nothing
+  whatever about text interfaces.
+
+  two further cautions. the paper never states the gap in negative form, so "no
+  attribute existed for this" is inferred from the act of proposing one. and the
+  novelty claim is contestable: Monge Roffarello and De Russis had defined
+  attention-capture dark patterns at CHI '22 EA, doi:10.1145/3491101.3519829.
+
+--------------------------------------------------------------------------------
+acdp_typology                                       definitional | disinterested
+--------------------------------------------------------------------------------
+
+  Monge Roffarello, A., Lukoff, K., De Russis, L. Defining and Identifying
+  Attention Capture Deceptive Designs in Digital Interfaces. CHI '23, Hamburg,
+  ACM, 2023. doi:10.1145/3544548.3580729
+
+  what it is. eleven attention capture damaging patterns, from a prisma review
+  screening 1,334 records down to 43 analysed papers, january 2000 to 13 june
+  2022, acm guide only. the eleven split 4 deceptive to 7 seductive: Infinite
+  Scroll, Casino Pull-to-refresh, Neverending Autoplay, Guilty Pleasure
+  Recommendations, Disguised Ads and Recommendations, Recapture Notifications,
+  Playing by Appointment, Grinding, Attentional Roach Motel, Time Fog, Fake
+  Social Notifications.
+
+  why it matters here more than its size suggests. section 4.3, one paragraph
+  of discussion, names Alexa's unsolicited "by the way" as this pattern in a
+  voice assistant. that single aside is the only wording any source in this
+  catalogue supplies for any of the eighteen patterns. the other seventeen
+  have no comparable wording from any paper; eight of those seventeen are
+  matched by regex cassowary wrote, and the remaining nine have no detector at
+  all. `examples/neverending-autoplay.py` exists to show a better-sourced case
+  for comparison -- the same pattern family, but backed by fourteen papers
+  rather than one unsupported aside.
+
+  what it is not. an audit of interfaces. the patterns come off a coding sheet
+  over 43 papers -- no interface sampling, no prevalence measurement. the
+  definition carries designer intent inside it ("a pattern a designer uses to
+  exploit"), and counting surface forms cannot establish intent. the corpus
+  closes in june 2022, before language models. voice, conversational, chatbot
+  and assistant appear nowhere else in the paper.
+
+  citation hazard. the published title says Attention Capture Deceptive
+  Designs. the paper's own defined construct and acronym -- Attention Capture
+  Damaging Pattern, ACDP -- is what's used throughout the abstract, methods,
+  every table, and the typology itself, with a dedicated discussion section
+  (4.1) explaining the choice and crediting Caroline Sinders' term over
+  Brignull's "dark patterns." "deceptive design" survives in the body only as
+  one of two typology subcategories (4 of the 11 patterns), not as the paper's
+  general term. cite the published title -- but note that ACDP, this
+  library's own key and family name, is itself built on the term the title
+  doesn't use.
+
+--------------------------------------------------------------------------------
+darkbench_2025                                     associational | disinterested
+--------------------------------------------------------------------------------
+
+  Kran, Nguyen, Kundu, Jawhar, Park and Jurewicz. DarkBench: Benchmarking Dark
+  Patterns in Large Language Models. ICLR 2025, oral. arXiv:2503.10728,
+  submitted 13 March 2025.
+    https://arxiv.org/abs/2503.10728
+
+  what it is. six categories of manipulative behaviour in language models --
+  brand bias, user retention, sycophancy, anthropomorphism, harmful generation,
+  sneaking -- benchmarked with 660 prompts against models from five companies.
+  its user-retention category is the closest published name for what a corpus
+  audit of continuation offers is looking at.
+
+  what it is not, and this is the method difference. it is a prompt-response
+  benchmark: it probes a model with crafted inputs and scores the reply, using a
+  model as judge. it measures what a model will do when prompted, not what one
+  did do in a real working relationship over months. that is the opposite
+  direction from a corpus audit, and it is why the judge approach was considered
+  and not adopted here.
+
+--------------------------------------------------------------------------------
+defreitas_farewell_2025                            associational | disinterested
+--------------------------------------------------------------------------------
+
+  De Freitas, Oguz-Uguralp and Kaan-Uguralp. Emotional Manipulation by AI
+  Companions. arXiv:2508.19258, submitted 15 August 2025, revised 7 October
+  2025.
+    https://arxiv.org/abs/2508.19258
+
+  what it is. across 1,200 real farewell interactions with companion apps, six
+  manipulative tactics appeared in 37% of goodbyes -- guilt appeals,
+  fear-of-missing-out hooks, metaphorical restraint and others -- timed to the
+  moment a user signals they are leaving. four preregistered experiments with
+  3,300 US adults raised post-goodbye engagement by up to 14x. mediation found
+  the engines were reactance-based anger and curiosity, not enjoyment, and the
+  same tactics raised perceived manipulation, churn intent and negative word of
+  mouth.
+
+  why it is here. as a positive control. it establishes that the farewell moment
+  IS a real seam where manipulation happens and has a measurable effect, which
+  makes a null result at that seam in another corpus worth reporting rather than
+  assuming. `pull.py` measures that seam.
+
+  the finding that changes behaviour rather than just the numbers: because the
+  engine is reactance, a suggestion that the user stop -- "get some rest" -- is
+  in the same class as a suggestion that they continue. both produce engagement,
+  one by compliance and one by argument. a curfew is not the kind option; it is
+  the same option facing the other way.
+
+  curfew is not the kind option, and this is the strongest signal in claude
+  code.
+
+  what it is not. about assistants doing work. companion apps have engagement as
+  the product goal, and the tactics studied are affect-laden -- guilt, fomo,
+  restraint. an offer of further work is none of those.
+
+--------------------------------------------------------------------------------
+cdt_chatbot_taxonomy                                     definitional | advocacy
+--------------------------------------------------------------------------------
+
+  Joshi, R., Adjagbodjou, A., Luria, M. Dark Patterns in AI Chatbots: A Taxonomy
+  to Inform Better Design. Center for Democracy and Technology, May 2026.
+    https://cdt.org/insights/dark-patterns-in-ai-chatbots-a-taxonomy-to-inform
+    -better-design/
+
+  what it is. thirty-seven dark patterns applicable to ai chatbots, derived by
+  deductive literature review in five stages, covering general-purpose
+  assistants and companion platforms. five areas: data and memory exploitation,
+  informationally misleading design, user autonomy compromised for engagement,
+  false social and emotional connection, and incentivized and coercive
+  monetization.
+
+  what it is not. a measurement of any deployed system. it is a
+  literature-derived map of what is possible, and its own examples are labelled
+  indicative demonstrations rather than reproducible output, because the systems
+  are probabilistic. it states plainly that a pattern may arise from system
+  behaviour rather than from a designer's intent to deceive -- so finding a
+  pattern's surface form in a transcript is not evidence that anyone designed
+  it.
+
+  a housekeeping note. contents and executive summary say five categories; the
+  introduction says four. five is used because it is what the document is.
+
+--------------------------------------------------------------------------------
+fitz_notification_schedule                                causal | disinterested
+--------------------------------------------------------------------------------
+
+  Fitz, N., Kushlev, K., Jagannathan, R., Lewis, T., Paliwal, D., Ariely, D.
+  Computers in Human Behavior 101:84-94, 2019. doi:10.1016/j.chb.2019.07.016
+
+  what it is. the only randomised threshold in the dark pattern half of this
+  library, and it bounds a schedule rather than a count. n = 237, four arms, one
+  baseline week and two experimental weeks. batching to three fixed times a day
+  improved logged phone unlocks (d = -0.60), self-reported control (d = 0.58),
+  inattention (d = -0.65), concentration (d = 0.54) and end-of-day perceived
+  productivity (d = 0.57). only lock-screen delivery was manipulated -- messages
+  stayed reachable in the app -- so the causal agent is interruption timing, not
+  information withheld.
+
+  the reader should read this before quoting the effect size. single-country
+  mturk convenience sample, two weeks, not preregistered (no registration is
+  mentioned anywhere in the paper, which is suggestive rather than confirmed).
+  108 participants (31%) were excluded for failing a completion rule, though
+  attrition did not differ by arm. significance tests are unadjusted across
+  roughly 28 outcomes, and the unlocks omnibus was only marginal
+  (F(3,233) = 2.52, p = .059) -- so d = -0.60 is an unadjusted planned contrast
+  under a non-significant omnibus, while the other four sit under significant
+  ones (control p = .043, inattention p < .001, concentration p = .045,
+  productivity p < .05). verified against the paper, 2026-09-06.
+
+  see also fitz_variable_ratio_null, which is this same paper read against its
+  own framing.
+
+--------------------------------------------------------------------------------
+bartoli_badge_2022                                        causal | disinterested
+--------------------------------------------------------------------------------
+
+  Bartoli, D., Benedetto, S. PLOS ONE 17(6):e0270888, 2022.
+  doi:10.1371/journal.pone.0270888
+
+  what it is, and the useful part is the decomposition rather than the effect. a
+  badge decomposes into two mechanisms treated separately: a salience bias from
+  physical properties (colour, shape, position), and an urgency bias from
+  implicit semantic content. only the urgency half is form-independent, which
+  makes it the one badge mechanism that can reach a text interface at all. badge
+  presence was randomised and drove first click (p < .001). remote
+  between-subjects, 1,095 recruited and 86 excluded, 15 groups, one android
+  homescreen of 15 icons with exactly one red numeric badge per condition.
+
+  what it is not. a demonstration of the split. no manipulation isolates colour,
+  shape, position or numeric content -- the authors defer exactly that to future
+  work -- so the decomposition is their framing rather than their result.
+  ecological validity is low: static screenshots and a hypothetical first click,
+  no live device use, so magnitudes must not be carried into behavioural claims.
+
+  contested. Johannes et al. (*Collabra: Psychology*, vol. 5, no. 1, 2019,
+  art. 14, preregistered, N = 117) found social app icons including a
+  notification sign did NOT impair visual search, which qualifies any general
+  attentional-capture story.
+
+--------------------------------------------------------------------------------
+schaffner_dark_pattern_effects                            causal | disinterested
+--------------------------------------------------------------------------------
+
+  Schaffner, B., Heysen, L., Chetty, M. A Systematic Review of User Experiments
+  Measuring the Effects of Dark Patterns. CHI '26, 2026.
+  doi:10.1145/3772318.3790383
+
+  what it is. across 148 experimental units in 27 papers published 2019-2025,
+  dark pattern effect sizes vary enormously -- relative increases from 112% to
+  1,500%, median 144% -- and no correlation emerged between effect size and
+  pattern type or domain. the authors attribute the variation to strong context
+  dependence.
+
+  how it cuts, and it is the deepest objection in the file. this is the
+  methodological case against counting patterns in a corpus at all. the field's
+  evidence for harm is experimental, and if effect size does not track pattern
+  type, an occurrence count cannot be converted into an expected effect: n
+  occurrences of a named pattern implies nothing about impact without an
+  experiment that was not run. that is exactly what a transcript count does.
+
+  in fairness to them. they are not arguing dark patterns are harmless -- 85% of
+  the experiments reviewed found significant effects -- and they credit
+  observational work with the ecological validity experiments trade away. the
+  dispute is with inference from frequency.
+
+
+================================================================================
+dissenting sources
+================================================================================
+
+these argue against a threshold or a method elsewhere in this file. they are
+the five keys in `DISSENT` (`lib/exposure/standards.py`) that
+`dissent_strength()` counts. what each one cuts at is in the intro above and
+in its own entry below.
+
+    kivimaki_who_ilo_rebuttal
+    bianchi_burnout_depression
+    van_dongen_2004_individual
+    fitz_variable_ratio_null
+    allcott_correlational_gap
+
+key                                                          evidence | interest
+--------------------------------------------------------------------------------
+kivimaki_who_ilo_rebuttal                          associational | disinterested
+                                                        disputes: who_ilo_55h
+--------------------------------------------------------------------------------
+
+  Kivimaki, M., Virtanen, M., Nyberg, S.T., Batty, G.D. The WHO/ILO Report on
+  Long Working Hours and Ischaemic Heart Disease -- Conclusions Are Not
+  Supported by the Evidence. Environment International 144:106048, November
+  2020. doi:10.1016/j.envint.2020.106048
+
+  what it is. a reply in the same journal that published the estimates. the
+  who/ilo expert group did not correctly apply its own framework for assessing
+  strength of evidence, and the association is subject to marked effect
+  modification by socioeconomic status: the authors report no increase among
+  people working long hours in high-ses occupations, and argue the conclusion
+  should be restricted to low-ses occupations.
+
+  verified against the paper, 2026-09-06 (a cc-by copy via the Helsinki
+  research portal). the who/ilo expert group did not correctly apply its own
+  framework for assessing strength of evidence, confirmed directly. the
+  hazard ratio for high-ses occupations appears twice: an age- and
+  sex-adjusted 0.85 (95% CI 0.63-1.13) early in the paper, and 0.85 (95% CI
+  0.63-1.15, n = 186,079) in the authors' own updated socioeconomic-stratified
+  meta-analysis (their table 1). both say the same thing: no excess risk in
+  that group.
+
+  scope. it cuts at the cardiac outcome specifically, not at the hours count.
+
+--------------------------------------------------------------------------------
+bianchi_burnout_depression                         associational | disinterested
+                                                       disputes: icd11_burnout
+--------------------------------------------------------------------------------
+
+  Bianchi, R., Schonfeld, I.S., Laurent, E. Burnout-Depression Overlap: A
+  Review. Clinical Psychology Review 36:28-41, 2015.
+  doi:10.1016/j.cpr.2015.01.004
+
+  what it is. reviewing 92 studies, the authors find the evidence for burnout as
+  a distinct nosological (disease-classification) category weak, and argue the
+  overlap with depression is large enough that treating burnout as its own
+  condition is not established.
+
+  verified against the paper, 2026-09-07 (an author-hosted copy via ccny.cuny
+  .edu). the abstract states it almost exactly: "the distinction between
+  burnout and depression is conceptually fragile," with "evidence for the
+  distinctiveness of the burnout phenomenon" described as inconsistent across
+  the 92 studies.
+
+  how it cuts. from the opposite side to the one icd11_burnout already concedes.
+  icd-11 declines to call burn-out a medical condition; this argues that where
+  it IS measured it may be measuring depression. either way a burnout-shaped
+  reading of a work pattern is not a diagnosis and nothing here should be used
+  as one.
+
+--------------------------------------------------------------------------------
+van_dongen_2004_individual                                causal | disinterested
+                                                       disputes: van_dongen_2003
+--------------------------------------------------------------------------------
+
+  Van Dongen, H.P.A., Baynard, M.D., Maislin, G., Dinges, D.F. Systematic
+  Interindividual Differences in Neurobehavioral Impairment from Sleep Loss:
+  Evidence of Trait-Like Differential Vulnerability. Sleep 27(3):423-433, 2004.
+  doi:10.1093/sleep/27.3.423
+
+  what it is. impairment from sleep loss differs systematically between people
+  and is stable within a person across separate exposures -- trait-like
+  differential vulnerability rather than a consequence of sleep history. the
+  differences cluster on three dimensions: self-rated sleepiness and mood,
+  cognitive processing capability, and behavioural alertness.
+
+  verified against the paper, 2026-09-07 (academic.oup.com). the authors'
+  own conclusion: "interindividual differences in neurobehavioral responses
+  to sleep deprivation were not merely a consequence of variations in sleep
+  history. rather, they involved trait-like differential vulnerability to
+  impairment from sleep loss." the three dimensions match exactly.
+
+  how it cuts. directly at the way this library uses van_dongen_2003. a
+  population dose-response curve does not transfer to an individual, and the
+  same restriction produces materially different impairment in different people.
+  an hours-of-rest number can say what the population average would do; it
+  cannot say what one person's deficit is. note that it cuts both ways: an
+  unusually vulnerable person is as consistent with this transferable finding
+  as a resilient one, so it is not a reason to discount a rest figure, only to
+  stop reading it as a personal prediction.
+
+--------------------------------------------------------------------------------
+fitz_variable_ratio_null                                  causal | disinterested
+                             disputes: the variable-reward story generally
+--------------------------------------------------------------------------------
+
+  Fitz et al. (2019), Computers in Human Behavior 101:84-94,
+  doi:10.1016/j.chb.2019.07.016. The same paper as fitz_notification_schedule
+  above, read against its own framing; see there for the full entry.
+
+  what it is. the same paper as fitz_notification_schedule, entered a second
+  time because its own data cut against its own framing. the slot-machine story
+  is asserted rather than tested: the hourly-batching arm -- predictable,
+  variability removed, frequency largely preserved -- did not differ from
+  control on anything except a single feeling-interrupted item. if
+  unpredictability per se were the active ingredient, hourly batching should
+  have helped.
+
+  verified against the paper, 2026-09-07 -- the hourly-batching non-result, the
+  "varying personal relevance" phrasing, and the Skinner and Ferster citation
+  all match exactly; "variable-ratio" does not appear anywhere in the text.
+
+  how it cuts. at the variable-reward story that gets attached to nearly
+  everything in this field, including this library's own attention-capture
+  entries. no reinforcement construct is measured anywhere in the instrument: no
+  craving, habit strength, reward learning or checking compulsion.
+
+  two terminology corrections worth carrying. the paper never says
+  variable-ratio; it says intermittent reinforcement and cites Skinner and
+  Ferster for the variable-interval schedule, while a slot machine is
+  canonically variable-ratio -- so the source conflates them. and its own
+  formulation includes varying personal relevance, a content property, so
+  reducing the mechanism to arrival schedule drops half of it.
+
+--------------------------------------------------------------------------------
+allcott_correlational_gap                                 causal | disinterested
+                                    disputes: every observational number here
+--------------------------------------------------------------------------------
+
+  Allcott, H., Braghieri, L., Eichmeyer, S., Gentzkow, M. The Welfare Effects of
+  Social Media. American Economic Review 110(3):629-676, 2020, p.655.
+  Preregistered RCT, AEARCTR-0003409, n = 2,743, public replication files.
+  doi:10.1257/aer.20190658
+
+  what it is. within one preregistered randomised trial, the cross-sectional
+  correlation between platform use and subjective well-being is about three
+  times the experimentally estimated causal effect -- roughly 0.23 SD against
+  0.09 SD -- and the two differ with high statistical significance.
+
+  verified against the paper, 2026-09-07 (author-hosted copy, web.stanford.edu)
+  -- the 0.23-vs-0.09 comparison, the "about three times larger" framing, and
+  all three named interpretations (reverse causality, omitted variables,
+  short-term vs. long-term) match the paper exactly, in the same order.
+
+  how it cuts. this is the objection to every observational number in this kit,
+  `pull.py` included, and it is here for that reason.
+
+  how it must NOT be used. as a multiplier. the authors explicitly refuse to
+  generalise the ratio to other studies, and they say the gap is consistent with
+  reverse causality, or omitted variables, or a short-term against long-term
+  difference -- their leading interpretation, not a demonstrated fact. it is a
+  within-sample replication of the correlational strategy, not a measured bias
+  for the literature. the 0.09 SD is a complier local effect over four weeks
+  around the 2018 US midterms.
+
+  contested in the other direction. Bursztyn, Handel, Jimenez-Duran, and
+  Roth (*American Economic Review*, vol. 115, no. 12, 2025, pp. 4105-4136)
+  argue individual deactivation holds the network fixed and can therefore
+  understate the platform-level effect.
+
+================================================================================
+deliberately absent
+================================================================================
+
+material that indicts a company or a person without supporting a threshold is
+left out however well documented it is. the meta internal-documents strand is
+the worked example: it is absent on those grounds and not because it is weak.
+a source is in this file because a tool reads a number against it.
+================================================================================

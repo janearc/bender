@@ -1,0 +1,24 @@
+// the stack, as one workspace: every member built
+// from this clone rather than from the proxy.
+//
+// written by game; each member keeps its own go.mod.
+go 1.26.4
+
+use (
+	./angry
+	./flipr-dist
+	./flipr-dist/clients/go
+	./game
+	./libdaffy
+	./libtheme-css
+	./puffin-dist
+	./starling-dist
+)
+
+// a member that asks for a sibling by version gets
+// the copy in this clone. without these the reader
+// goes to the proxy for a tag that may not be
+// published, and the stack then builds only on a
+// machine whose module cache already has it.
+replace github.com/janearc/flipr-dist/clients/go v1.1.1 => ./flipr-dist/clients/go
+replace github.com/janearc/libtheme-css v0.3.0 => ./libtheme-css

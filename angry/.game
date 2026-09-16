@@ -1,0 +1,38 @@
+# game: angry, a streaming maps client for the console
+#
+# name is the project: it is the block in the builder's own config that says
+# where this tree's two remotes are. nothing here holds a remote.
+name angry
+
+# the lint angry holds. a repository that describes any lint describes all
+# of it, so this list is the whole of it.
+lint width 80
+lint comments
+lint exclaim
+lint shout
+lint paragraph 4
+lint words hyperscaler enterprise-grade blazing-fast load-bearing
+
+# the design page and the readme keep their shape. the design argues from
+# what the terminal can and cannot draw, at the length that argument takes,
+# and the readme's examples are pasted frames, which wrap where the frame
+# wrapped. reflowing either edits the exhibit.
+lint allow DESIGN.md paragraph width
+lint allow README.md paragraph width rows
+
+# the suite, as a target, so a stack build runs it the way a person does.
+target test . :: go test ./...
+
+# what this tree carries on purpose.
+#
+# reference/ is a copy of kingfisher's own files, taken so this project can be
+# read and built without reaching into the enclave. the copies name their
+# origin and their author, which is the point of a reference: a reader can see
+# where the shapes came from. the design page names paths for the same reason.
+#
+# one test names an agent, because the case it pins came from that agent's
+# review.
+sweep allow DESIGN.md paths
+sweep allow reference/README.md paths
+sweep allow reference/hexify.py author
+sweep allow cmd/angry/repl_test.go word

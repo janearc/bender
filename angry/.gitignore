@@ -1,0 +1,5 @@
+/angry
+/cmd/*/angry
+# the binary before the rename, until it is rebuilt
+/uv-h3-tui-client
+bin/

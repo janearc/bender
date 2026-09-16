@@ -1,0 +1,21 @@
+== step 1, in .: python3 tools/style-check-test.py
+case                                        expected  got     verdict 
+--------------------------------------------------------------------
+bounded fault in markdown                   allow     allow   ok      
+estate register with rfc 2119 words         allow     allow   ok      
+capitals in string literals, comments clean allow     allow   ok      
+short edit below the word floor             allow     allow   ok      
+bash that is not a commit                   allow     allow   ok      
+clean commit message                        allow     allow   ok      
+capitals fenced off in markdown             allow     allow   ok      
+fault words with no first person            allow     allow   ok      
+json passes untouched                       allow     allow   ok      
+unbounded fault in markdown                 deny      deny    ok      
+capitals at peer-message density            deny      deny    ok      
+bold past the limit                         deny      deny    ok      
+session trailer in a commit                 deny      deny    ok      
+session trailer in a heredoc commit         deny      deny    ok      
+unbounded fault in a source comment         deny      deny    ok      
+unbounded fault in a commit message         deny      deny    ok      
+
+16 of 16 cases behave as specified

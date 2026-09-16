@@ -1,0 +1,71 @@
+# game: cassowary, detection and forensics for claude code
+#
+# name is the project: it is the block in the builder's own config that says
+# where this tree's two remotes are. nothing here holds a remote, and a
+# builder who has no block for it builds locally.
+name cassowary-dist
+
+# the lint cassowary holds. a repository that describes any lint describes
+# all of it, so this list is the whole of it.
+lint width 80
+lint comments
+lint exclaim
+lint shout
+lint paragraph 4
+lint words hyperscaler enterprise-grade blazing-fast load-bearing
+
+# the design doc and the readme keep their shape. both are the record of
+# what this tool was built against: the design argues from real findings at
+# the length the argument takes, and the readme's examples are pasted
+# evidence, which wraps where the evidence wrapped. reflowing either to suit
+# a width rule edits the exhibit. battle-born, and it shows; that is the
+# point of it.
+lint allow DESIGN.md paragraph width
+lint allow README.md paragraph width shout
+
+# the readme is not a screen and is not meant to be. it opens with a
+# cassowary drawn out of the phrases this tool exists to detect, and the rest
+# is worked examples of real findings. cutting it to twenty-five lines would
+# remove the evidence, which in a forensics tool is the product. the card
+# rule is waived for this one page by name rather than by the dotfile's
+# absence. its section headings are capitals because that is what a manpage
+# calls them, which is why shout is allowed on it too.
+lint allow README.md rows
+
+# two tools stay on the road and never enter a release. they measure the
+# operator's own working hours, tuned from her rows, and that is hers and
+# lives on this machine.
+#
+# omit, not exclude: exclude scopes what the sweep reads, and a file nobody
+# reads still ships. omit keeps it out of the released tree.
+omit tools/hours.py
+omit tools/load-profile.py
+
+# the suite, as a target, so a stack build runs it the way a person does.
+# style-check is a hook, so its test drives it as a subprocess with one
+# payload per case and checks the negatives as hard as the positives.
+target test . :: python3 tools/style-check-test.py
+
+# THE SCARS, DECLARED.
+#
+# this is a forensics tool and its subject was this estate: the marks are
+# the product, not a leak. a reader who wants to know where a finding came
+# from can see it. each is named by file and by kind so that a real leak in
+# the same file is still found, which excluding the file or overriding the
+# sweep would both hide.
+#
+# the two tools that measured the operator's own hours are not here. they
+# are excluded above, and they stay on the road.
+sweep allow DESIGN.md paths
+sweep allow NOTICE author
+sweep allow README.md sessions word author
+sweep allow tools/agents-by-dir.py paths word author
+sweep allow tools/commit-claims.py paths
+sweep allow tools/daylog.py paths
+sweep allow tools/export-extract.py sessions
+sweep allow tools/fleetlog.py paths word
+sweep allow tools/freeze-audit.py paths word author
+sweep allow tools/image-extract.py paths
+sweep allow tools/session-extract.py paths
+sweep allow tools/style-check-test.py sessions emails
+sweep allow tools/style-check.py paths author

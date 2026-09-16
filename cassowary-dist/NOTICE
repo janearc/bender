@@ -1,0 +1,9 @@
+cassowary
+Copyright 2026 Jane Michelle Arc
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+This product includes pattern definitions from LLM Dark Patterns Hooks
+(https://github.com/waitdeadai/llm-dark-patterns), Apache-2.0. Six expressions,
+reformatted and commented; see lib/exposure/carved.py for what was taken and
+what was changed.
