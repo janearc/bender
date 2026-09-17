@@ -11,6 +11,30 @@ set -e
 command -v go >/dev/null || { echo "bootstrap: go is not on the path" >&2; exit 1; }
 command -v git >/dev/null || { echo "bootstrap: git is not on the path" >&2; exit 1; }
 
+# the members are not here on the road: this file, the .game and the
+# readme are, and the trees arrive only when game assembles a release.
+# without this a person standing in the road gets a go module error
+# about a directory that was never meant to exist here.
+if [ ! -d game/cmd/game ]; then
+	cat >&2 <<'EOF'
+bootstrap: there is no game/ beside this script, so this is bender's
+road rather than an assembled bender. the road carries the .game, this
+script, the readme and the card; the members arrive when a release is
+cut from it.
+
+to build the stack from here:
+
+	game release stack vX.Y.Z    assemble the members at their tags
+	game release push vX.Y.Z     send it: needs --publish, and that
+	                             word is the owner's to type
+
+or clone what was published, which is what a reader does:
+
+	git clone https://github.com/janearc/bender
+EOF
+	exit 1
+fi
+
 mkdir -p bin
 echo "building game out of game/ with go; nothing is installed"
 # the same two -ldflags game passes when it builds itself, so the binary

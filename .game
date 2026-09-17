@@ -37,6 +37,10 @@ lint words hyperscaler enterprise-grade blazing-fast load-bearing
 # still found.
 sweep allow readme.md author
 
+# the same handle, in the clone line bootstrap prints when somebody runs
+# it on the road: it is the address of the published repository.
+sweep allow bootstrap.sh author
+
 # libtheme's design page ends with its author's byline, which is the one
 # place in that tree a name belongs; the stack's sweep is told so.
 exclude libtheme-css/DESIGN.md
