@@ -9,7 +9,7 @@ name bender
 stack game v0.3.18
 stack flipr-dist v0.3.1
 stack starling-dist v0.3.1
-stack puffin-dist v0.3.2
+stack puffin-dist v0.3.4
 stack kingfisher-dist v0.3.1
 stack libtheme-css v0.3.2
 stack libdaffy v0.3.1
@@ -29,6 +29,13 @@ lint exclaim
 lint shout
 lint paragraph 4
 lint words hyperscaler enterprise-grade blazing-fast load-bearing
+
+# the front page links to every member on github, and those urls carry
+# the owner's handle. the sweep reads janearc as her name, which it is,
+# and the links are to public repositories that are the point of the
+# page. declared by file and by kind so a real name in this file is
+# still found.
+sweep allow readme.md author
 
 # libtheme's design page ends with its author's byline, which is the one
 # place in that tree a name belongs; the stack's sweep is told so.

@@ -63,6 +63,7 @@ just work, which is in fact the promise of docker, and kubernetes. i fit this
 easily on my laptop inside 6gb of ram, and a modest amount of disk.
 
 - [flipr](https://github.com/janearc/flipr-dist): realtime config
+
   i have to admit that when i first encountered flipr at uber i was skeptical.
   it seemed like a kludge or a hack. but then when you realise that you can
   hit a json blob endpoint on a highly available service and it changes the
@@ -77,6 +78,7 @@ easily on my laptop inside 6gb of ram, and a modest amount of disk.
   build fails. this way everyone is being honest.
 
 - [starling](https://github.com/janearc/starling-dist): agentic bus
+
   when we build software with agents, it is important to know what they are
   doing and in fact what they are thinking. it's pretty useful to have logs of
   what they've said to eachother, and after a couple incidents where agents got
@@ -92,6 +94,7 @@ i am a backend engineer by trade, i love working there, i love the feeling of
 doing huge amounts of work, quietly, thanklessly, just passing data around.
 
 - [kingfisher](https://github.com/janearc/kingfisher-dist): high speed maps
+
   i have a few applications that are based on deckgl and h3. i'm proud of the
   fact that when i was at uber, i was on the team that built this lib when we
   shipped it. it's fast, it's functional, it's beautiful, and i love that a
@@ -107,6 +110,7 @@ shapes" and "what constitutes a window here?" so this breaks down into a couple
 component parts upon which everything else is built.
 
 - [libtheme](https://github.com/janearc/libtheme-css) color and themes
+
   it turns out color is very complicated. and i find that i use it in places
   i don't even realize i'm using it. smart lights. vim theme. zsh theme. tmux
   theme. web interfaces. each separate 'space' has its own understanding of
@@ -116,6 +120,7 @@ component parts upon which everything else is built.
   is only color, it doesn't draw anything.
 
 - [libdaffy](https://github.com/janearc/libdaffy) sprites, rendering, shapes
+
   i was building tui applications to monitor my kubernetes and agents, and 
   then i began to be very dissatisfied with my ability to create interfaces.
   drawing is hard in the console. this required making a library to draw 
@@ -135,6 +140,7 @@ a dev network, and i have the same rigor as i would with anyone's enterprise
 network, at home, on my laptop.
 
 - [puffin](https://github.com/janearc/puffin-dist) observability, c2
+
   there's so much stuff going on in this environment that it becomes impossible
   to manage everything through each individual interface. puffin is a bit of
   an aggregator. puffin knows where everything is managed, and presents it in
@@ -149,6 +155,7 @@ network, at home, on my laptop.
   what their status is, who they are talking to, and so on.
  
 - **angry** *tui streaming maps client / benchmark*
+
   because i have kingfisher, and kingfisher needs automated testing and
   benchmarking, i needed way to do this in a non-interactive way. browsers
   are notoriously not good at this. so we built the tool and along the way we
@@ -178,6 +185,7 @@ gosh we love tools as engineers. just like with starling, as we began to work
 with agents, it became clear that we needed forensic tooling.
 
 - [cassowary](https://github.com/janearc/cassowary) forensics, interrogation
+
   "what is that agent doing?" or, importantly, "what the hell just happened?"
   it turns out that agents make decisions. sometimes those decisions are
   unexpected. sometimes they can be frightening or dangerous. it's really
@@ -207,6 +215,7 @@ with agents, it became clear that we needed forensic tooling.
   with contagion. cassowary is for this.
 
 - [game](https://github.com/janearc/game) build, when you've got agents.
+
   agents mean well, i think. they do great work when they have sufficient
   instruction and support. but a lot of the code they produce needs extensive
   linting and shaping before it is suitable for release. we built game to be
@@ -231,6 +240,19 @@ with agents, it became clear that we needed forensic tooling.
   me. and if i want a build tool that can give us an attractive tui while it
   goes and builds stuff for an hour, or has an actual interface, that's just
   a win all around.
+
+  the last thing that game gives us, that nothing else can give us, is
+  integration with *`cassowary`*. cassowary gives us an agent aware `whoami`,
+  which we then turn into the hook *`agent-attrib`*, which means an agent
+  signs its commits in a derivable way. a nice consequence of this is we also
+  get *`agent-blame`*, which means we can see where the commits come from.
+  because `game` is agent-aware, this means each agent gets its own game config
+  in its anchor directory. so you can spawn an agent and it effectively has
+  per-product repository controls. this means if you are operating on a single
+  machine (like i am, a laptop), and you have eight or whatever agents doing
+  stuff, they are committing code, but it's not all `'jane'` or whoever you
+  are. it's them, and they know it, and you know it. this is a hard problem to
+  solve, and game solves it for us in addition to building software.
 
 # where does this leave us?
 

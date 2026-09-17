@@ -20,5 +20,5 @@ use (
 // goes to the proxy for a tag that may not be
 // published, and the stack then builds only on a
 // machine whose module cache already has it.
-replace github.com/janearc/flipr-dist/clients/go v1.1.1 => ./flipr-dist/clients/go
+replace github.com/janearc/flipr-dist/clients/go v1.1.2 => ./flipr-dist/clients/go
 replace github.com/janearc/libtheme-css v0.3.0 => ./libtheme-css
